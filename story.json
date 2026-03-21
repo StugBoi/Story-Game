@@ -1,0 +1,255 @@
+{
+  "start": {
+    "text": "You wake up in a dark forest.",
+    "choices": [
+      {
+        "text": "Look around",
+        "next": "look",
+        "effects": { "fear": 1 }
+      },
+      {
+        "text": "Walk forward",
+        "next": "path",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "look": {
+    "text": "You see an old house.",
+    "choices": [
+      {
+        "text": "Enter the house",
+        "next": "house"
+      }
+    ]
+  },
+
+  "path": {
+    "text": "You walk deeper into the forest and hear strange sounds.",
+    "choices": [
+      {
+        "text": "Investigate the sound",
+        "next": "sound"
+      },
+      {
+        "text": "Run away",
+        "next": "start"
+      }
+    ]
+  },
+
+  "house": {
+    "text": "The wooden door creaks as you step inside. Dust covers the floor and a dim lantern flickers on a table. You hear footsteps upstairs.",
+    "choices": [
+      {
+        "text": "Go upstairs",
+        "next": "upstairs",
+        "effects": { "courage": 1 }
+      },
+      {
+        "text": "Inspect the lantern",
+        "next": "lantern"
+      },
+      {
+        "text": "Leave the house",
+        "next": "start",
+        "effects": { "fear": 1 }
+      }
+    ]
+  },
+
+  "lantern": {
+    "text": "You pick up the lantern. Its light grows stronger, revealing strange symbols carved into the walls.",
+    "choices": [
+      {
+        "text": "Study the symbols",
+        "next": "symbols",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Take the lantern and go upstairs",
+        "next": "upstairs",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "symbols": {
+    "text": "The symbols seem to warn about something that lives deep in the forest. Suddenly you hear a loud thump upstairs.",
+    "choices": [
+      {
+        "text": "Rush upstairs",
+        "next": "upstairs"
+      },
+      {
+        "text": "Leave the house immediately",
+        "next": "path"
+      }
+    ]
+  },
+
+  "upstairs": {
+    "text": "Upstairs you find a long hallway with several broken doors. At the end of the hall, a shadow moves.",
+    "choices": [
+      {
+        "text": "Approach the shadow",
+        "next": "shadow",
+        "effects": { "courage": 2 }
+      },
+      {
+        "text": "Hide and watch",
+        "next": "hide",
+        "effects": { "fear": 1 }
+      },
+      {
+        "text": "Run downstairs",
+        "next": "house"
+      }
+    ]
+  },
+
+  "shadow": {
+    "text": "The shadow slowly forms into a tall figure with glowing eyes. It speaks: 'You should not be here.'",
+    "choices": [
+      {
+        "text": "Ask who it is",
+        "next": "spirit"
+      },
+      {
+        "text": "Attack the figure",
+        "next": "fight",
+        "effects": { "courage": 2 }
+      },
+      {
+        "text": "Run",
+        "next": "path",
+        "effects": { "fear": 2 }
+      }
+    ]
+  },
+
+  "hide": {
+    "text": "You hide behind a broken door. The shadow glides past you and disappears into another room.",
+    "choices": [
+      {
+        "text": "Follow it quietly",
+        "next": "shadow"
+      },
+      {
+        "text": "Search the nearby room",
+        "next": "room"
+      }
+    ]
+  },
+
+  "room": {
+    "text": "Inside the room you find an old journal describing a creature that guards something powerful in the forest.",
+    "choices": [
+      {
+        "text": "Take the journal",
+        "next": "upstairs",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Leave the house",
+        "next": "path"
+      }
+    ]
+  },
+
+  "sound": {
+    "text": "You follow the strange sound and discover a glowing clearing. In the center stands a stone altar.",
+    "choices": [
+      {
+        "text": "Inspect the altar",
+        "next": "altar",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Return to the forest path",
+        "next": "path"
+      }
+    ]
+  },
+
+  "altar": {
+    "text": "As you approach the altar, the ground trembles. Something ancient is waking beneath the forest.",
+    "choices": [
+      {
+        "text": "Stay and face it",
+        "next": "ending_brave",
+        "effects": { "courage": 3 }
+      },
+      {
+        "text": "Speak the ancient words from the journal",
+        "next": "ending_scholar",
+        "condition": { "knowledge": 3 },
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Escape while you can",
+        "next": "start",
+        "effects": { "fear": 2 }
+      }
+    ]
+  },
+
+  "spirit": {
+    "text": "The figure reveals itself as a forest spirit bound to guard the house. It watches you carefully.",
+    "choices": [
+      {
+        "text": "Ask for help escaping the forest",
+        "next": "ending_escape"
+      },
+      {
+        "text": "Demand the forest's secret",
+        "next": "altar"
+      },
+      {
+        "text": "Tell the spirit what the journal says",
+        "next": "ending_truth",
+        "condition": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "fight": {
+    "text": "You lunge forward, but your attack passes through the spirit like smoke. It lets out a deep laugh.",
+    "choices": [
+      {
+        "text": "Try to reason with it",
+        "next": "spirit"
+      },
+      {
+        "text": "Stand your ground and refuse to back down",
+        "next": "ending_brave",
+        "condition": { "courage": 5 }
+      },
+      {
+        "text": "Run for your life",
+        "next": "path"
+      }
+    ]
+  },
+
+  "ending_escape": {
+    "text": "The spirit opens a hidden path through the trees. You escape the forest just before dawn. But you know the forest is still watching.",
+    "choices": []
+  },
+
+  "ending_brave": {
+    "text": "The ancient guardian rises from beneath the altar. You stand your ground as the forest holds its breath. Your courage is absolute.",
+    "choices": []
+  },
+
+  "ending_scholar": {
+    "text": "The ancient words echo across the clearing. The ground goes still. The guardian pauses, then slowly bows its head. You have spoken the language it has not heard in a thousand years. The forest lets you pass.",
+    "choices": []
+  },
+
+  "ending_truth": {
+    "text": "You tell the spirit what the journal revealed. Its glowing eyes dim. It was never a guardian by choice. You have freed it. The forest exhales, and a path home opens before you.",
+    "choices": []
+  }
+}
