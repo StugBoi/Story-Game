@@ -1,5 +1,6 @@
 {
   "start": {
+    "image": "1",
     "text": "You wake up in a dark forest.",
     "choices": [
       {
@@ -16,6 +17,7 @@
   },
 
   "look": {
+    "image": "2",
     "text": "You see an old house.",
     "choices": [
       {
@@ -26,6 +28,7 @@
   },
 
   "path": {
+    "image": "1",
     "text": "You walk deeper into the forest and hear strange sounds.",
     "choices": [
       {
@@ -40,6 +43,7 @@
   },
 
   "house": {
+    "image": "3",
     "text": "The wooden door creaks as you step inside. Dust covers the floor and a dim lantern flickers on a table. You hear footsteps upstairs.",
     "choices": [
       {
@@ -60,6 +64,7 @@
   },
 
   "lantern": {
+    "image": "3",
     "text": "You pick up the lantern. Its light grows stronger, revealing strange symbols carved into the walls.",
     "choices": [
       {
@@ -76,6 +81,7 @@
   },
 
   "symbols": {
+    "image": "3",
     "text": "The symbols seem to warn about something that lives deep in the forest. Suddenly you hear a loud thump upstairs.",
     "choices": [
       {
@@ -90,6 +96,7 @@
   },
 
   "upstairs": {
+    "image": "4",
     "text": "Upstairs you find a long hallway with several broken doors. At the end of the hall, a shadow moves.",
     "choices": [
       {
@@ -110,6 +117,7 @@
   },
 
   "shadow": {
+    "image": "5",
     "text": "The shadow slowly forms into a tall figure with glowing eyes. It speaks: 'You should not be here.'",
     "choices": [
       {
@@ -130,6 +138,7 @@
   },
 
   "hide": {
+    "image": "4",
     "text": "You hide behind a broken door. The shadow glides past you and disappears into another room.",
     "choices": [
       {
@@ -144,6 +153,7 @@
   },
 
   "room": {
+    "image": "4",
     "text": "Inside the room you find an old journal describing a creature that guards something powerful in the forest.",
     "choices": [
       {
@@ -159,6 +169,7 @@
   },
 
   "sound": {
+    "image": "6",
     "text": "You follow the strange sound and discover a glowing clearing. In the center stands a stone altar.",
     "choices": [
       {
@@ -174,6 +185,7 @@
   },
 
   "altar": {
+    "image": "7",
     "text": "As you approach the altar, the ground trembles. Something ancient is waking beneath the forest.",
     "choices": [
       {
@@ -196,6 +208,7 @@
   },
 
   "spirit": {
+    "image": "8",
     "text": "The figure reveals itself as a forest spirit bound to guard the house. It watches you carefully.",
     "choices": [
       {
@@ -215,6 +228,7 @@
   },
 
   "fight": {
+    "image": "5",
     "text": "You lunge forward, but your attack passes through the spirit like smoke. It lets out a deep laugh.",
     "choices": [
       {
@@ -234,21 +248,25 @@
   },
 
   "ending_escape": {
+    "image": "9",
     "text": "The spirit opens a hidden path through the trees. You escape the forest just before dawn. But you know the forest is still watching.",
     "choices": []
   },
 
   "ending_brave": {
+    "image": "10",
     "text": "The ancient guardian rises from beneath the altar. You stand your ground as the forest holds its breath. Your courage is absolute.",
     "choices": []
   },
 
   "ending_scholar": {
+    "image": "10",
     "text": "The ancient words echo across the clearing. The ground goes still. The guardian pauses, then slowly bows its head. You have spoken the language it has not heard in a thousand years. The forest lets you pass.",
     "choices": []
   },
 
   "ending_truth": {
+    "image": "9",
     "text": "You tell the spirit what the journal revealed. Its glowing eyes dim. It was never a guardian by choice. You have freed it. The forest exhales, and a path home opens before you.",
     "choices": []
   }
