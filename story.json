@@ -1,55 +1,545 @@
 {
   "start": {
     "image": "1",
-    "text": "You wake up in a dark forest.",
+    "text": "You wake up in a dark forest with no memory of how you got here. The trees are ancient and twisted, their roots like frozen hands reaching from the earth. Somewhere far away, a bell tolls — once, twice, then silence.",
     "choices": [
       {
-        "text": "Look around",
+        "text": "Follow the sound of the bell",
+        "next": "bell_path",
+        "effects": { "curiosity": 1 }
+      },
+      {
+        "text": "Look for shelter",
         "next": "look",
         "effects": { "fear": 1 }
       },
       {
-        "text": "Walk forward",
-        "next": "path",
+        "text": "Try to remember who you are",
+        "next": "memory",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "memory": {
+    "image": "1",
+    "text": "You close your eyes. Fragments surface — a lantern, a woman's voice, the smell of rain on old stone. Then a name: Maren. Someone you were searching for. The forest brought you here for a reason.",
+    "choices": [
+      {
+        "text": "Focus on the woman — who is Maren?",
+        "next": "maren_vision",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Shake it off and look for shelter",
+        "next": "look",
+        "effects": { "fear": 1 }
+      }
+    ]
+  },
+
+  "maren_vision": {
+    "image": "1",
+    "text": "A flash of memory — Maren was your sister. She entered this forest three months ago and never returned. You came to find her. Now you are here too.",
+    "choices": [
+      {
+        "text": "Search the forest for any sign of her",
+        "next": "look",
+        "effects": { "curiosity": 1 }
+      },
+      {
+        "text": "Follow the bell — she might have heard it too",
+        "next": "bell_path",
+        "effects": { "curiosity": 1 }
+      }
+    ]
+  },
+
+  "bell_path": {
+    "image": "1",
+    "text": "The path narrows as the bell grows louder. You reach a stone arch covered in moss, older than anything should be in these woods. Beyond it, the air smells different — like old books and extinguished candles.",
+    "choices": [
+      {
+        "text": "Pass through the arch",
+        "next": "arch",
+        "effects": { "curiosity": 1 }
+      },
+      {
+        "text": "Examine the arch first",
+        "next": "arch_inspect",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Go around it",
+        "next": "look"
+      }
+    ]
+  },
+
+  "arch_inspect": {
+    "image": "11",
+    "text": "The carvings on the arch are names — dozens of them, worn smooth by time. Near the bottom, freshly carved, you find one you recognize: MAREN. Below it, a date. Three months ago.",
+    "choices": [
+      {
+        "text": "Step through the arch immediately",
+        "next": "arch",
+        "effects": { "fear": 1, "curiosity": 2 }
+      },
+      {
+        "text": "Carve your own name beside hers",
+        "next": "arch_carved",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "arch_carved": {
+    "image": "11",
+    "text": "As the last letter of your name is carved, the arch hums faintly. The moss shifts. Something ancient has taken notice of you.",
+    "choices": [
+      {
+        "text": "Step through",
+        "next": "arch",
+        "effects": { "curiosity": 1 }
+      }
+    ]
+  },
+
+  "arch": {
+    "image": "11",
+    "text": "Beyond the arch stands a clearing bathed in pale light that has no source. In the center a stone well. Around it, seven candles burn without flame — their wicks glow blue, cold and still.",
+    "choices": [
+      {
+        "text": "Approach the well",
+        "next": "well",
+        "effects": { "curiosity": 1 }
+      },
+      {
+        "text": "Examine the candles",
+        "next": "candles",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Call out Maren's name",
+        "next": "call_maren",
+        "effects": { "fear": 1 }
+      }
+    ]
+  },
+
+  "call_maren": {
+    "image": "12",
+    "text": "Your voice echoes strangely, as if the forest repeats it in layers. Then — a voice answers. Not from around you. From below the well.",
+    "choices": [
+      {
+        "text": "Rush to the well",
+        "next": "well",
+        "effects": { "courage": 2 }
+      },
+      {
+        "text": "Step back and listen",
+        "next": "well_voice",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "well_voice": {
+    "image": "12",
+    "text": "The voice is calm. Too calm. It says: 'You should not have come. The forest does not give back what it takes. But it can be bargained with.' Then silence again.",
+    "choices": [
+      {
+        "text": "Ask what the bargain is",
+        "next": "well",
+        "effects": { "curiosity": 1 }
+      },
+      {
+        "text": "Refuse to bargain — look for another way",
+        "next": "look",
         "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "well": {
+    "image": "12",
+    "text": "You look into the well. Far below, a faint light pulses. The water surface reflects not your face, but a room — the inside of a house, a lantern on a table, a figure sitting with its back to you.",
+    "choices": [
+      {
+        "text": "Reach into the water",
+        "next": "well_touch",
+        "effects": { "curiosity": 2 }
+      },
+      {
+        "text": "Find that house",
+        "next": "look",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Drop something into the well",
+        "next": "well_drop",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "well_touch": {
+    "image": "12",
+    "text": "The moment your fingers touch the water, a memory floods you — not yours. A woman lighting a lantern. Writing in a journal. Whispering: 'If anyone finds this, do not trust the keeper of the house.' Then the image breaks.",
+    "choices": [
+      {
+        "text": "Find the house immediately",
+        "next": "look",
+        "effects": { "knowledge": 2, "fear": 1 }
+      }
+    ]
+  },
+
+  "well_drop": {
+    "image": "12",
+    "text": "You drop a stone. It falls in silence for too long. Then a sound rises — not a splash, but a whisper: 'Seven candles. Seven names. Yours is the eighth.' The candles flicker.",
+    "choices": [
+      {
+        "text": "Leave this place",
+        "next": "look",
+        "effects": { "fear": 2 }
+      },
+      {
+        "text": "Count the candles again",
+        "next": "candles",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "candles": {
+    "image": "12",
+    "text": "Seven candles. You count them twice. Each one has a name scratched into its base — the same names from the arch. The seventh candle has no name. Its glow is slightly warmer than the others.",
+    "choices": [
+      {
+        "text": "Touch the seventh candle",
+        "next": "candle_seven",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Leave it alone and find the house",
+        "next": "look"
+      }
+    ]
+  },
+
+  "candle_seven": {
+    "image": "12",
+    "text": "The moment you touch it, the flame turns gold. A map burns itself into your mind — the layout of a house, a hidden room behind a bookshelf, and a warning: 'Do not let the keeper see you take the journal.'",
+    "choices": [
+      {
+        "text": "Head to the house",
+        "next": "look",
+        "effects": { "knowledge": 1 }
       }
     ]
   },
 
   "look": {
     "image": "2",
-    "text": "You see an old house.",
+    "text": "Through the trees you see a house — three stories, one window lit. It looks recently inhabited. Near the front door, a pair of muddy boots that are too small to belong to you.",
     "choices": [
       {
         "text": "Enter the house",
+        "next": "house"
+      },
+      {
+        "text": "Check the boots",
+        "next": "boots",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Circle around and look for another entrance",
+        "next": "side_door",
+        "effects": { "curiosity": 1 }
+      }
+    ]
+  },
+
+  "boots": {
+    "image": "2",
+    "text": "Women's boots, size small. Inside the left one — a folded note. The handwriting is hurried: 'The keeper knows I found the journal. I am hiding it in the room with the broken mirror. Hurry.' No signature.",
+    "choices": [
+      {
+        "text": "Enter the house and find that room",
+        "next": "house",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "side_door": {
+    "image": "2",
+    "text": "Around the back you find a cellar door, padlocked but the lock is rusted through. Below, stone steps descend into darkness and the smell of cold earth.",
+    "choices": [
+      {
+        "text": "Go down into the cellar",
+        "next": "cellar",
+        "effects": { "courage": 1 }
+      },
+      {
+        "text": "Use the front door instead",
         "next": "house"
       }
     ]
   },
 
-  "path": {
-    "image": "1",
-    "text": "You walk deeper into the forest and hear strange sounds.",
+  "cellar": {
+    "image": "13",
+    "text": "The cellar is full of jars containing things better left unnamed. Against one wall — shelves of journals, dozens of them, all identical. And sitting in a chair facing away from you: a figure in a gray coat.",
     "choices": [
       {
-        "text": "Investigate the sound",
-        "next": "sound"
+        "text": "Speak to the figure",
+        "next": "keeper_cellar",
+        "effects": { "courage": 1 }
       },
       {
-        "text": "Run away",
-        "next": "start"
+        "text": "Grab a journal and run",
+        "next": "journal_grab",
+        "effects": { "courage": 2, "fear": 1 }
+      },
+      {
+        "text": "Back away silently",
+        "next": "house"
+      }
+    ]
+  },
+
+  "keeper_cellar": {
+    "image": "13",
+    "text": "The figure turns. An old woman with pale eyes — not blind, worse: she sees too much. She says, 'I have been waiting. Not for you. But you will do.' She smiles and it does not reach her eyes.",
+    "choices": [
+      {
+        "text": "Ask about Maren",
+        "next": "keeper_maren",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Ask who she is",
+        "next": "keeper_who",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Back away slowly",
+        "next": "house",
+        "effects": { "fear": 1 }
+      }
+    ]
+  },
+
+  "keeper_who": {
+    "image": "13",
+    "text": "'I am the one who tends the records,' she says. 'Every soul that enters this forest is written down. Their choices. Their fears. Their worth.' She taps one of the journals. 'Your sister was very interesting.'",
+    "choices": [
+      {
+        "text": "Ask what happened to Maren",
+        "next": "keeper_maren",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Demand she release Maren",
+        "next": "keeper_demand",
+        "effects": { "courage": 2 }
+      }
+    ]
+  },
+
+  "keeper_maren": {
+    "image": "13",
+    "text": "'Your sister made a bargain,' the keeper says. 'She offered herself to the forest in exchange for something she wanted very badly.' She pauses. 'She wanted you to be free of this place. She did not know you would follow.'",
+    "choices": [
+      {
+        "text": "Ask how to undo the bargain",
+        "next": "keeper_bargain",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Tell her the bargain was made without your consent",
+        "next": "keeper_refuse",
+        "effects": { "courage": 2 }
+      }
+    ]
+  },
+
+  "keeper_bargain": {
+    "image": "13",
+    "text": "'The bargain can be undone,' she says slowly, 'if you find her journal and burn it at the altar before the seventh candle goes out. But I would advise against it. The forest will need a replacement.'",
+    "choices": [
+      {
+        "text": "Find the journal no matter what",
+        "next": "house",
+        "effects": { "courage": 1, "knowledge": 1 }
+      },
+      {
+        "text": "Ask who the replacement would be",
+        "next": "keeper_replace",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "keeper_replace": {
+    "image": "13",
+    "text": "She looks at you without blinking. 'You already know the answer to that.' The cellar grows colder. The journals on the shelf rattle faintly.",
+    "choices": [
+      {
+        "text": "Accept — take Maren's place instead",
+        "next": "ending_sacrifice",
+        "effects": { "courage": 3 }
+      },
+      {
+        "text": "Refuse and find another way",
+        "next": "house",
+        "effects": { "courage": 1, "fear": 1 }
+      }
+    ]
+  },
+
+  "keeper_refuse": {
+    "image": "13",
+    "text": "Something shifts in the keeper's expression. For a moment she looks almost uncertain. 'No one has said that before,' she admits. 'The forest's rules are old. But they have been broken once. A very long time ago.'",
+    "choices": [
+      {
+        "text": "Ask how the rules were broken",
+        "next": "keeper_broken_rule",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "keeper_broken_rule": {
+    "image": "13",
+    "text": "'Someone found the root,' the keeper says. 'The first tree. The one the forest grew from. They spoke its true name and the bargain collapsed.' She pauses. 'No one has found it since. The forest hides it well.'",
+    "choices": [
+      {
+        "text": "Search the forest for the first tree",
+        "next": "deep_forest",
+        "effects": { "curiosity": 2 }
+      },
+      {
+        "text": "Get the journal first",
+        "next": "house",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "keeper_demand": {
+    "image": "13",
+    "text": "The keeper stands slowly. She is taller than she seemed. 'Demand,' she repeats. 'Interesting word. Let us see if you have the strength behind it.' The candles in the cellar go out one by one.",
+    "choices": [
+      {
+        "text": "Hold your ground",
+        "next": "keeper_standoff",
+        "effects": { "courage": 2 }
+      },
+      {
+        "text": "Run upstairs",
+        "next": "house",
+        "effects": { "fear": 2 }
+      }
+    ]
+  },
+
+  "keeper_standoff": {
+    "image": "13",
+    "text": "In the dark you say nothing. You wait. The keeper says, 'The last candle.' A single light remains. She sits back down. 'Fine. Find the journal. Burn it. But do not say I did not warn you.'",
+    "choices": [
+      {
+        "text": "Go find the journal",
+        "next": "house",
+        "effects": { "courage": 1, "knowledge": 1 }
+      }
+    ]
+  },
+
+  "keeper_reveal": {
+    "image": "13",
+    "text": "You find the keeper in the cellar. You tell her about Sela. About the candles. Her pale eyes fill — not with tears, with light. She says, 'Sela.' Just the name. The house shakes. Every candle in the cellar reignites.",
+    "choices": [
+      {
+        "text": "Tell her how to undo everything",
+        "next": "ending_keeper_freed",
+        "effects": { "courage": 2 }
+      },
+      {
+        "text": "Ask her to help you free Maren",
+        "next": "keeper_helps",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "keeper_helps": {
+    "image": "13",
+    "text": "The keeper takes a key from around her neck — iron, blackened, shaped like a root. 'This opens the well,' she says. 'Drop it in and speak the name of who you want returned. The forest will listen.' She hesitates. 'It will not listen twice.'",
+    "choices": [
+      {
+        "text": "Take the key and use it for Maren",
+        "next": "ending_maren_returned",
+        "effects": { "courage": 1 }
+      },
+      {
+        "text": "Use it to free all seven",
+        "next": "ending_all_freed",
+        "condition": { "knowledge": 5 },
+        "effects": { "courage": 2 }
+      }
+    ]
+  },
+
+  "journal_grab": {
+    "image": "13",
+    "text": "You snatch a journal from the shelf. The figure rises instantly. 'THAT IS NOT YOURS.' The room shakes. You run — up the stairs, into the house, the door slamming behind you. The journal in your hands is Maren's.",
+    "choices": [
+      {
+        "text": "Read it immediately",
+        "next": "maren_journal",
+        "effects": { "knowledge": 3 }
+      },
+      {
+        "text": "Hide it and explore the house first",
+        "next": "house",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "maren_journal": {
+    "image": "3",
+    "text": "Maren's handwriting covers the pages. She found the first tree. She wrote its name but crossed it out with three heavy strokes, writing instead: 'Do not speak it aloud. Only whisper it to the roots. Only at the base of the first tree.' The name is still legible beneath the crossing.",
+    "choices": [
+      {
+        "text": "Memorize the name and find the first tree",
+        "next": "deep_forest",
+        "effects": { "knowledge": 2, "curiosity": 1 }
+      },
+      {
+        "text": "Burn the journal at the altar",
+        "next": "altar_burn",
+        "effects": { "knowledge": 1 }
       }
     ]
   },
 
   "house": {
     "image": "3",
-    "text": "The wooden door creaks as you step inside. Dust covers the floor and a dim lantern flickers on a table. You hear footsteps upstairs.",
+    "text": "The wooden door creaks as you step inside. Dust covers the floor and a dim lantern flickers on a table. You hear footsteps upstairs — heavy, deliberate. And from somewhere behind the bookshelf, a faint knocking.",
     "choices": [
       {
         "text": "Go upstairs",
         "next": "upstairs",
         "effects": { "courage": 1 }
+      },
+      {
+        "text": "Inspect the bookshelf",
+        "next": "bookshelf",
+        "effects": { "curiosity": 1 }
       },
       {
         "text": "Inspect the lantern",
@@ -63,9 +553,93 @@
     ]
   },
 
+  "bookshelf": {
+    "image": "3",
+    "text": "The shelf swings inward — a hidden room, exactly as the candle map showed. Inside: a broken mirror in seven pieces, a journal on the floor, and scratched into the wall in desperate letters: 'I AM STILL HERE.'",
+    "choices": [
+      {
+        "text": "Take the journal",
+        "next": "maren_journal",
+        "effects": { "knowledge": 3 }
+      },
+      {
+        "text": "Examine the mirror pieces",
+        "next": "mirror",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Call out to whoever left the message",
+        "next": "mirror_voice",
+        "effects": { "curiosity": 2 }
+      }
+    ]
+  },
+
+  "mirror_voice": {
+    "image": "3",
+    "text": "A whisper comes from the largest mirror fragment: 'Do not look directly. Look at the edges.' You angle your gaze. In the peripheral reflection you see a woman — translucent, flickering. Maren.",
+    "choices": [
+      {
+        "text": "Speak to her",
+        "next": "maren_mirror",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "maren_mirror": {
+    "image": "3",
+    "text": "'You found me,' Maren's reflection says. Her voice sounds like it comes from underwater. 'The keeper trapped my reflection here when I got too close to the truth. Burn the journal at the altar and speak my name. That will break it.'",
+    "choices": [
+      {
+        "text": "Take the journal and head to the altar",
+        "next": "altar_burn",
+        "effects": { "knowledge": 1, "courage": 1 }
+      },
+      {
+        "text": "Ask about the first tree",
+        "next": "maren_tree",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "maren_tree": {
+    "image": "3",
+    "text": "'The first tree is older than the keeper,' Maren says. 'If you find it and speak its name, the forest releases everyone it holds. But the keeper will try to stop you. And the forest will not make it easy to find.'",
+    "choices": [
+      {
+        "text": "Go find the first tree",
+        "next": "deep_forest",
+        "effects": { "courage": 1, "curiosity": 1 }
+      },
+      {
+        "text": "Burn the journal — free Maren first",
+        "next": "altar_burn",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "mirror": {
+    "image": "3",
+    "text": "The seven mirror pieces each reflect a different room of the house — but not as it is now. As it was. In one piece, a fireplace with people gathered around it. In another, an empty chair and a door swinging open. In the last — a forest path and someone walking away.",
+    "choices": [
+      {
+        "text": "Take the journal and go",
+        "next": "maren_journal",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Go upstairs",
+        "next": "upstairs"
+      }
+    ]
+  },
+
   "lantern": {
     "image": "3",
-    "text": "You pick up the lantern. Its light grows stronger, revealing strange symbols carved into the walls.",
+    "text": "You pick up the lantern. Its light shifts from yellow to green and back again. The symbols on the walls become visible — not carvings, but stains, as if burned from inside the wood.",
     "choices": [
       {
         "text": "Study the symbols",
@@ -73,7 +647,7 @@
         "effects": { "knowledge": 1 }
       },
       {
-        "text": "Take the lantern and go upstairs",
+        "text": "Take the lantern upstairs",
         "next": "upstairs",
         "effects": { "courage": 1 }
       }
@@ -82,22 +656,24 @@
 
   "symbols": {
     "image": "3",
-    "text": "The symbols seem to warn about something that lives deep in the forest. Suddenly you hear a loud thump upstairs.",
+    "text": "The symbols form a sentence in a language you almost understand. The last line is clearer than the rest — a warning, or a direction: 'The first tree stands where the forest forgets itself.'",
     "choices": [
       {
-        "text": "Rush upstairs",
-        "next": "upstairs"
+        "text": "Remember this and go upstairs",
+        "next": "upstairs",
+        "effects": { "knowledge": 1 }
       },
       {
-        "text": "Leave the house immediately",
-        "next": "path"
+        "text": "Follow this clue to the deep forest",
+        "next": "deep_forest",
+        "effects": { "knowledge": 1, "curiosity": 1 }
       }
     ]
   },
 
   "upstairs": {
     "image": "4",
-    "text": "Upstairs you find a long hallway with several broken doors. At the end of the hall, a shadow moves.",
+    "text": "The hallway upstairs is longer than the house should allow. Doors line both walls. At the far end a shadow moves — but also, halfway down, one door has light coming from beneath it. And the shadow has not noticed you yet.",
     "choices": [
       {
         "text": "Approach the shadow",
@@ -105,98 +681,336 @@
         "effects": { "courage": 2 }
       },
       {
+        "text": "Open the lit door",
+        "next": "lit_room",
+        "effects": { "curiosity": 1 }
+      },
+      {
         "text": "Hide and watch",
         "next": "hide",
         "effects": { "fear": 1 }
       },
       {
-        "text": "Run downstairs",
+        "text": "Go back downstairs",
         "next": "house"
+      }
+    ]
+  },
+
+  "lit_room": {
+    "image": "4",
+    "text": "Inside — a child's room, perfectly preserved. On the desk: a music box, still playing. On the bed: a toy carved from dark wood in the shape of a tree. And pinned to the wall, a child's drawing of a woman with no face and the words 'THE KEEPER' written beneath.",
+    "choices": [
+      {
+        "text": "Take the carved tree",
+        "next": "tree_toy",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Open the music box",
+        "next": "music_box",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Leave and approach the shadow",
+        "next": "shadow"
+      }
+    ]
+  },
+
+  "music_box": {
+    "image": "4",
+    "text": "Inside the music box, instead of a dancer — a tiny carved forest. As the melody plays, you notice one tree in the center is different from the others. Taller. Its roots spread across the entire base. The music box is a map.",
+    "choices": [
+      {
+        "text": "Take the music box",
+        "next": "music_map",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "music_map": {
+    "image": "4",
+    "text": "With the music box you now know exactly where the first tree stands — northeast of the house, past the altar, where the forest grows so dense the light changes color. You also know the keeper will sense you going there.",
+    "choices": [
+      {
+        "text": "Go to the first tree directly",
+        "next": "deep_forest",
+        "effects": { "courage": 1, "knowledge": 1 }
+      },
+      {
+        "text": "Confront the shadow first",
+        "next": "shadow"
+      }
+    ]
+  },
+
+  "tree_toy": {
+    "image": "4",
+    "text": "The moment you hold the carved tree, it grows warm. A voice — a child's voice — says: 'She was my mother. Before the forest changed her. If you find the first tree, she will remember who she was.' Then silence.",
+    "choices": [
+      {
+        "text": "Ask who the child was",
+        "next": "keeper_child",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Go find the first tree",
+        "next": "deep_forest",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "keeper_child": {
+    "image": "4",
+    "text": "The carved tree stays warm. The voice speaks again: 'My name was Sela. I am one of the seven.' A pause. 'The candles. We are the candles. When they go out, we are gone. The keeper does not know she is the one extinguishing us.'",
+    "choices": [
+      {
+        "text": "Go to the keeper and tell her",
+        "next": "keeper_reveal",
+        "effects": { "courage": 2, "knowledge": 1 }
+      },
+      {
+        "text": "Find the first tree and end this",
+        "next": "deep_forest",
+        "effects": { "courage": 1 }
       }
     ]
   },
 
   "shadow": {
     "image": "5",
-    "text": "The shadow slowly forms into a tall figure with glowing eyes. It speaks: 'You should not be here.'",
+    "text": "The shadow turns. It is not a creature — it is a person. A young man, barely solid, flickering like candlelight. He looks at you with recognition. 'Another one,' he says. 'How long have I been here?'",
     "choices": [
       {
-        "text": "Ask who it is",
-        "next": "spirit"
+        "text": "Ask who he is",
+        "next": "ghost_who",
+        "effects": { "knowledge": 1 }
       },
       {
-        "text": "Attack the figure",
-        "next": "fight",
-        "effects": { "courage": 2 }
+        "text": "Ask what he knows about the forest",
+        "next": "ghost_forest",
+        "effects": { "knowledge": 1 }
       },
       {
-        "text": "Run",
-        "next": "path",
-        "effects": { "fear": 2 }
+        "text": "Ask if he knows Maren",
+        "next": "ghost_maren",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "ghost_who": {
+    "image": "5",
+    "text": "'Aldric,' he says. 'I was a surveyor. I came to map the forest. The keeper offered me shelter and I stayed too long.' He looks at his own hands. 'I cannot leave the hallway. But I can tell you things.'",
+    "choices": [
+      {
+        "text": "Ask about the first tree",
+        "next": "ghost_tree",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Ask about the keeper",
+        "next": "ghost_keeper",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "ghost_forest": {
+    "image": "5",
+    "text": "'The forest feeds on memory,' Aldric says. 'The longer you stay, the more it takes. Your name first, then your face, then why you came. That is how the keeper works — she waits for you to forget that you wanted to leave.'",
+    "choices": [
+      {
+        "text": "Ask how to fight it",
+        "next": "ghost_resist",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Ask about Maren",
+        "next": "ghost_maren"
+      }
+    ]
+  },
+
+  "ghost_resist": {
+    "image": "5",
+    "text": "'Write down why you came,' Aldric says. 'Every time you feel uncertain. And say the name of someone you love. Out loud. The forest cannot take what you keep speaking.' He pauses. 'I forgot to do both.'",
+    "choices": [
+      {
+        "text": "Say Maren's name aloud",
+        "next": "ghost_maren",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "ghost_maren": {
+    "image": "5",
+    "text": "Aldric's expression changes. 'Maren. Yes. She passed through here — she moved with purpose, unlike the others. She left something for anyone who came after.' He points to a door. 'Behind the broken mirror. She said you would know what to do with it.'",
+    "choices": [
+      {
+        "text": "Go to the hidden room",
+        "next": "bookshelf",
+        "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Ask what happened to her",
+        "next": "ghost_maren_fate",
+        "effects": { "knowledge": 1 }
+      }
+    ]
+  },
+
+  "ghost_maren_fate": {
+    "image": "5",
+    "text": "'The keeper split her,' Aldric says quietly. 'Her memory is in the mirror. Her voice is in the well. Her name is on the arch. To restore her, you need all three to be in the same place at the same time.' He looks at you steadily. 'The altar.'",
+    "choices": [
+      {
+        "text": "Go to the hidden room for the journal",
+        "next": "bookshelf",
+        "effects": { "knowledge": 2 }
+      },
+      {
+        "text": "Go directly to the altar",
+        "next": "altar",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "ghost_tree": {
+    "image": "5",
+    "text": "'Northeast,' Aldric says. 'Past the altar, where the ground roots rise like walls. But the forest will try to turn you around. Count your steps. And do not stop moving no matter what you hear.'",
+    "choices": [
+      {
+        "text": "Head to the deep forest",
+        "next": "deep_forest",
+        "effects": { "courage": 1, "knowledge": 1 }
+      }
+    ]
+  },
+
+  "ghost_keeper": {
+    "image": "5",
+    "text": "'She was not always like this,' Aldric says. 'The forest made her what she is. She made a bargain once — she traded her own grief for the role of keeper. She forgot she had a child. She forgot she had a name. She only remembers the rules.'",
+    "choices": [
+      {
+        "text": "Find a way to remind her",
+        "next": "keeper_reveal",
+        "condition": { "knowledge": 2 },
+        "effects": { "courage": 1 }
+      },
+      {
+        "text": "Find the first tree — end the forest's power",
+        "next": "deep_forest",
+        "effects": { "curiosity": 1 }
       }
     ]
   },
 
   "hide": {
     "image": "4",
-    "text": "You hide behind a broken door. The shadow glides past you and disappears into another room.",
+    "text": "You press yourself behind a door. The shadow — Aldric — drifts past, whispering to himself: 'Northeast. Northeast. I should have gone northeast.' He disappears through a wall.",
     "choices": [
       {
-        "text": "Follow it quietly",
-        "next": "shadow"
+        "text": "Follow him through the wall",
+        "next": "deep_forest",
+        "effects": { "curiosity": 2 }
       },
       {
         "text": "Search the nearby room",
-        "next": "room"
+        "next": "lit_room",
+        "effects": { "curiosity": 1 }
       }
     ]
   },
 
-  "room": {
-    "image": "4",
-    "text": "Inside the room you find an old journal describing a creature that guards something powerful in the forest.",
+  "deep_forest": {
+    "image": "14",
+    "text": "The trees here grow impossibly close. Their roots interlock above the ground like locked fingers. The air hums. After what feels like hours, you see it — a tree unlike any other. Vast, pale, perfectly still. Its roots spread in every direction and the ground around it is dry and white.",
     "choices": [
       {
-        "text": "Take the journal",
-        "next": "upstairs",
-        "effects": { "knowledge": 2 }
+        "text": "Approach and speak the true name",
+        "next": "first_tree_name",
+        "condition": { "knowledge": 4 },
+        "effects": { "courage": 2 }
       },
       {
-        "text": "Leave the house",
-        "next": "path"
-      }
-    ]
-  },
-
-  "sound": {
-    "image": "6",
-    "text": "You follow the strange sound and discover a glowing clearing. In the center stands a stone altar.",
-    "choices": [
-      {
-        "text": "Inspect the altar",
-        "next": "altar",
+        "text": "Touch the bark",
+        "next": "first_tree_touch",
         "effects": { "knowledge": 1 }
       },
       {
-        "text": "Return to the forest path",
-        "next": "path"
+        "text": "Whisper Maren's name to the roots",
+        "next": "first_tree_maren",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "first_tree_touch": {
+    "image": "14",
+    "text": "The bark is warm. Images flood you — the forest before the keeper, before the bargain, when it was simply a forest. You see the first bargain being made — a woman, grief-stricken, asking the forest to take her sorrow. The forest took everything instead.",
+    "choices": [
+      {
+        "text": "Speak the true name",
+        "next": "first_tree_name",
+        "condition": { "knowledge": 4 },
+        "effects": { "courage": 1 }
+      },
+      {
+        "text": "Whisper Maren's name",
+        "next": "first_tree_maren"
+      }
+    ]
+  },
+
+  "first_tree_maren": {
+    "image": "14",
+    "text": "You whisper Maren's name to the roots. The ground trembles once. The tree leans — impossibly, slightly — toward you. A single root lifts and points back the way you came. The forest is telling you something is happening at the altar.",
+    "choices": [
+      {
+        "text": "Run to the altar",
+        "next": "altar",
+        "effects": { "courage": 1 }
+      }
+    ]
+  },
+
+  "first_tree_name": {
+    "image": "14",
+    "text": "You kneel at the roots and whisper the name. The forest goes completely silent. Then a sound like every leaf falling at once. The pale tree shudders. Light runs through its bark like veins. The forest breathes out — a long, slow release of something held too long.",
+    "choices": [
+      {
+        "text": "Wait and see what happens",
+        "next": "ending_forest_broken",
+        "effects": { "courage": 1 }
       }
     ]
   },
 
   "altar": {
     "image": "7",
-    "text": "As you approach the altar, the ground trembles. Something ancient is waking beneath the forest.",
+    "text": "The altar stone pulses with cold light. The ground around it is etched with names — you recognize Maren's. The seventh candle from the clearing is here, still burning, though it flickers urgently.",
     "choices": [
       {
-        "text": "Stay and face it",
+        "text": "Burn the journal here and speak Maren's name",
+        "next": "altar_burn",
+        "condition": { "knowledge": 2 },
+        "effects": { "courage": 1 }
+      },
+      {
+        "text": "Stay and face whatever is coming",
         "next": "ending_brave",
         "effects": { "courage": 3 }
       },
       {
         "text": "Speak the ancient words from the journal",
         "next": "ending_scholar",
-        "condition": { "knowledge": 3 },
+        "condition": { "knowledge": 5 },
         "effects": { "knowledge": 1 }
       },
       {
@@ -207,67 +1021,107 @@
     ]
   },
 
-  "spirit": {
-    "image": "8",
-    "text": "The figure reveals itself as a forest spirit bound to guard the house. It watches you carefully.",
+  "altar_burn": {
+    "image": "7",
+    "text": "You place Maren's journal on the altar stone. It catches without a flame — simply unmakes itself, page by page, each one releasing a faint light. You speak her name into the rising smoke. The altar cracks down the center. From the crack — a hand.",
     "choices": [
       {
-        "text": "Ask for help escaping the forest",
-        "next": "ending_escape"
+        "text": "Take the hand",
+        "next": "ending_maren_returned",
+        "effects": { "courage": 2 }
+      }
+    ]
+  },
+
+  "sound": {
+    "image": "6",
+    "text": "You follow a low harmonic hum to a glowing clearing. A stone altar stands at its center, etched with names. The seventh candle burns beside it, its flame moving against no wind.",
+    "choices": [
+      {
+        "text": "Inspect the altar",
+        "next": "altar",
+        "effects": { "knowledge": 1 }
       },
       {
-        "text": "Demand the forest's secret",
-        "next": "altar"
+        "text": "Examine the candle",
+        "next": "candles",
+        "effects": { "knowledge": 1 }
       },
       {
-        "text": "Tell the spirit what the journal says",
-        "next": "ending_truth",
-        "condition": { "knowledge": 2 }
+        "text": "Return to the forest path",
+        "next": "look"
       }
     ]
   },
 
   "fight": {
     "image": "5",
-    "text": "You lunge forward, but your attack passes through the spirit like smoke. It lets out a deep laugh.",
+    "text": "You lunge forward but Aldric steps aside with a sad smile. 'I am not what you should be fighting,' he says. 'And you cannot hurt me. I am already gone.' He gestures toward the hallway. 'The real danger is the keeper. And time.'",
     "choices": [
       {
-        "text": "Try to reason with it",
-        "next": "spirit"
+        "text": "Listen to him",
+        "next": "ghost_who",
+        "effects": { "knowledge": 1 }
       },
       {
-        "text": "Stand your ground and refuse to back down",
-        "next": "ending_brave",
-        "condition": { "courage": 5 }
+        "text": "Stand your ground and demand answers",
+        "next": "ghost_forest",
+        "condition": { "courage": 5 },
+        "effects": { "knowledge": 1 }
       },
       {
         "text": "Run for your life",
-        "next": "path"
+        "next": "look",
+        "effects": { "fear": 2 }
       }
     ]
   },
 
-  "ending_escape": {
+  "ending_maren_returned": {
     "image": "9",
-    "text": "The spirit opens a hidden path through the trees. You escape the forest just before dawn. But you know the forest is still watching.",
+    "text": "Maren's hand is cold but solid. You pull and she emerges — whole, pale, confused. She sees you and says your name like it is the first word she has remembered. The altar goes dark. The forest is quiet. You walk out together as the first light of morning finds the trees.",
     "choices": []
   },
 
   "ending_brave": {
     "image": "10",
-    "text": "The ancient guardian rises from beneath the altar. You stand your ground as the forest holds its breath. Your courage is absolute.",
+    "text": "The ground splits and something vast and ancient rises from beneath the altar. You do not run. You stand and meet its gaze — two enormous eyes like moons, studying you. It says nothing. After a long moment, it sinks back into the earth. The forest was testing you. You passed.",
     "choices": []
   },
 
   "ending_scholar": {
     "image": "10",
-    "text": "The ancient words echo across the clearing. The ground goes still. The guardian pauses, then slowly bows its head. You have spoken the language it has not heard in a thousand years. The forest lets you pass.",
+    "text": "The ancient words leave your mouth and the clearing holds its breath. The guardian pauses mid-rise and slowly, impossibly, bows its head. You have spoken the language it has not heard in a thousand years. It opens a path none of the others found. You walk through it into open air — and somewhere behind you, you hear the forest sigh.",
     "choices": []
   },
 
-  "ending_truth": {
+  "ending_sacrifice": {
+    "image": "7",
+    "text": "You tell the keeper you will take Maren's place. She looks at you for a long time. 'You understand what this means.' It is not a question. You nod. That night Maren walks out of the forest with no memory of it. You remain. The forest is quieter now, as if it too is uncertain what to do with someone who chose this.",
+    "choices": []
+  },
+
+  "ending_escape": {
     "image": "9",
-    "text": "You tell the spirit what the journal revealed. Its glowing eyes dim. It was never a guardian by choice. You have freed it. The forest exhales, and a path home opens before you.",
+    "text": "The forest opens a narrow path and you run. You do not look back. You emerge onto a road at dawn, alone, with only the memory of a name you are already beginning to forget. The forest lets you go. It always does, eventually. It only keeps what it wants.",
+    "choices": []
+  },
+
+  "ending_forest_broken": {
+    "image": "9",
+    "text": "The forest releases everything it holds. The seven candles blaze gold and go out. Aldric appears at the tree line, solid and blinking. Then others — more than seven, more than you expected. And finally Maren, walking slowly, carrying her journal. She looks up and smiles. The first tree stands empty of its power. Just a tree now. The oldest, and finally at rest.",
+    "choices": []
+  },
+
+  "ending_keeper_freed": {
+    "image": "9",
+    "text": "You tell the keeper about Sela, about the candles, about what she is doing without knowing it. She stands very still for a long time. Then she walks out of the cellar, through the house, and into the forest. You follow at a distance. She finds the first tree. She speaks a name — her own, the one she forgot — and the forest lets her go. In the morning the house is empty and the arch has no names.",
+    "choices": []
+  },
+
+  "ending_all_freed": {
+    "image": "9",
+    "text": "You drop the iron key into the well and speak not one name but seven. The well fills with light. One by one, the candles in the clearing blaze and scatter their flame into the air like fireflies. Aldric. Sela. Five others you never learned. And Maren, last, stepping out of the forest at sunrise with her boots on and her journal under her arm, looking for you.",
     "choices": []
   }
 }
