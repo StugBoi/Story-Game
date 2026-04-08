@@ -2,12 +2,23 @@ import pygame
 import json
 import sys
 import os
+import psycopg
+from datetime import datetime
 
 # --- Config ---
 SCREEN_W, SCREEN_H = 1280, 720
 FPS = 60
 IMAGES_DIR = "scenes"
 STORY_FILE = "story.json"
+
+DB_CONFIG = {
+    "host": "localhost",
+    "port": 5432,
+    "dbname": "novel",
+    "user": "postgres",
+    "password": "712Samsung",
+}
+
 
 # Colors
 COLOR_BOX_BG      = (10, 8, 20, 210)
@@ -20,6 +31,15 @@ COLOR_CHOICE_BD   = (60, 160, 90, 160)
 COLOR_STAT_BG     = (10, 8, 20, 160)
 COLOR_LOCKED      = (80, 80, 80, 160)
 COLOR_LOCKED_TEXT = (100, 100, 100)
+COLOR_INPUT_BG    = (15, 25, 18, 240)
+COLOR_INPUT_BD    = (80, 180, 120, 220)
+COLOR_INPUT_ACTV  = (40, 160, 80, 255)
+COLOR_BTN_BG      = (20, 60, 35, 220)
+COLOR_BTN_HV      = (30, 110, 55, 255)
+COLOR_BTN_RED     = (60, 20, 20, 220)
+COLOR_BTN_RED_HV  = (110, 30, 30, 255)
+COLOR_NOTIFY_BG   = (10, 40, 20, 230)
+COLOR_NOTIFY_BD   = (60, 200, 100, 180)
 
 FONT_MAIN  = None
 FONT_SMALL = None
@@ -31,6 +51,37 @@ CHOICE_PAD  = 10
 BOX_MARGIN  = 40
 BOX_PADDING = 28
 CORNER_R    = 14
+
+def db_connect():
+    return  psycopg.connect(**DB_CONFIG)
+
+def db_init():
+    """Create table if it doesn't exist."""
+    try:
+        conn = db_connect()
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS saves (
+                id          SERIAL PRIMARY KEY,
+                session_name TEXT NOT NULL UNIQUE,
+                scene       TEXT NOT NULL,
+                state       JSONB NOT NULL,
+                saved_at    TIMESTAMP    DEFAULT NOW()
+            )
+        """)
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"[DB] init error: {e}")
+        return False
+
+# db save
+
+#db load list
+
+#db load(session name)
 
 
 def load_fonts():
