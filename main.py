@@ -77,12 +77,60 @@ def db_init():
         print(f"[DB] init error: {e}")
         return False
 
-# db save
+def db_save(session_name, scene, state):
+    try:
+        conn = db_connect()
+        cur = conn.cursor()
+        cur.execute("""
+            INSERT INTO saves (session_name, scene, state, saved_at)
+            VALUES (%s, %s, %s, NOW())
+            ON CONFLICT (session_name)
+            DO UPDATE SET scene = EXLUDED.scene, state = EXLUDED.state, saved_at = NOW()
+        """, (session_name, scene, json.dumps(state)))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return True
+    except Exception as e:
+        print(f"[DB] save error: {e}")
+        return False
+        
 
-#db load list
+def load_list():
+    try:
+        conn = db_connect()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT session_name, scene, saved_at
+            FROM saves
+            ORDER BY saved_at DESC
+            LIMIT 10
+        """)
+        rows = cur.fetchall()
+        cur.close()
+        conn.close()
+        return rows
+    except Exception as e:
+        print(f"[DB] load list error: {e}")
+        return  []
 
-#db load(session name)
-
+def db_load(session_name):
+    try:
+        conn = db_connect()
+        cur = conn.cursor()
+        cur.execute("""
+            SELECT scene, state FROM saves WHERE session_name = %s
+        """, (session_name))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+        if row:
+            return row[0], row[1]
+        return None
+    except Exception as e:
+        print(f"[DB] db_load error: {e}")
+        return None
+        
 
 def load_fonts():
     global FONT_MAIN, FONT_SMALL, FONT_TITLE
@@ -102,7 +150,6 @@ def load_story(path):
 
 
 def load_image(image_id):
-    """Load image by id (e.g. '1' -> scenes/1.jpg)"""
     for ext in (".jpg", ".jpeg", ".png", ".webp"):
         path = os.path.join(IMAGES_DIR, image_id + ext)
         if os.path.exists(path):
@@ -158,6 +205,88 @@ def draw_stats(surface, state):
         draw_rounded_rect(surface, bg_rect, COLOR_STAT_BG, radius=6)
         surface.blit(surf, (x - w + 8, y + 4))
         y += 32
+
+def draw_save_button(surface, hover=False):
+    """Draw S key hint top-left."""
+    color = COLOR_BTN_HV if hover else COLOR_BTN_BG
+    rect = pygame.Rect(BOX_MARGIN, BOX_MARGIN, 110, 34)
+    draw_rounded_rect(surface, rect, color, radius=8)
+    draw_rounded_border(surface, rect, COLOR_INPUT_BD, width=1, radius=8)
+    label = FONT_SMALL.render("[S]  Save", True, COLOR_TEXT)
+    surface.blit(label, (rect.x + 12, rect.y + 8))
+    return rect
+
+
+def draw_load_button(surface, hover=False):
+    """Draw L key hint next to save button."""
+    color = COLOR_BTN_HV if hover else COLOR_BTN_BG
+    rect = pygame.Rect(BOX_MARGIN + 120, BOX_MARGIN, 110, 34)
+    draw_rounded_rect(surface, rect, color, radius=8)
+    draw_rounded_border(surface, rect, COLOR_INPUT_BD, width=1, radius=8)
+    label = FONT_SMALL.render("[L]  Load", True, COLOR_TEXT)
+    surface.blit(label, (rect.x + 12, rect.y + 8))
+    return rect
+
+
+class Notification:
+    def __init__(self, text, duration=2500):
+        self.text = text
+        self.duration = duration
+        self.timer = 0
+        self.active = True
+
+    def update(self, dt):
+        self.timer += dt
+        if self.timer >= self.duration:
+            self.active = False
+
+    def draw(self, surface):
+        alpha = 255
+        if self.timer > self.duration - 400:
+            alpha = int(255 * (self.duration - self.timer) / 400)
+        w = FONT_MAIN.size(self.text)[0] + 40
+        rect = pygame.Rect(SCREEN_W // 2 - w // 2, 20, w, 44)
+        s = pygame.Surface((rect.width, rect.height), pygame.SRCALPHA)
+        bg = (*COLOR_NOTIFY_BG[:3], min(COLOR_NOTIFY_BG[3], alpha))
+        pygame.draw.rect(s, bg, s.get_rect(), border_radius=10)
+        surface.blit(s, rect.topleft)
+        bd = (*COLOR_NOTIFY_BD[:3], min(COLOR_NOTIFY_BD[3], alpha))
+        pygame.draw.rect(surface, bd, rect, width=1, border_radius=10)
+        txt = FONT_MAIN.render(self.text, True, (*COLOR_TEXT[:3], alpha))
+        surface.blit(txt, (rect.x + 20, rect.y + 11))
+
+
+def run_save_dialog(surface, screen, clock, bg):
+    input_text = ""
+    active = True
+    result_msg = None
+
+    dialog_w, dialog_h = 520, 200
+    dialog_x = SCREEN_W // 2 - dialog_w // 2
+    dialog_y = SCREEN_H // 2 - dialog_h // 2
+
+    input_rect  = pygame.Rect(dialog_x + 30, dialog_y + 90, dialog_w - 60, 44)
+    btn_save    = pygame.Rect(dialog_x + 30, dialog_y + 148, 200, 36)
+    btn_cancel  = pygame.Rect(dialog_x + dialog_w - 230, dialog_y + 148, 200, 36)
+
+    while active:
+        if bg:
+            screen.blit(bg, (0,0))
+        else:
+            screen.fill((10,10,18))
+        overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 160))
+        screen.blit(overlay, (0, 0))
+
+        #Dialog box
+
+        #Title
+
+        # Input Field
+
+        #Buttons
+
+        #event get key
 
 
 def draw_scene(surface, bg, scene, available, locked, state, hover_idx):
