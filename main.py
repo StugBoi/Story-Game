@@ -96,7 +96,7 @@ def db_save(session_name, scene, state):
         return False
         
 
-def load_list():
+def db_load_list():
     try:
         conn = db_connect()
         cur = conn.cursor()
@@ -279,14 +279,138 @@ def run_save_dialog(surface, screen, clock, bg):
         screen.blit(overlay, (0, 0))
 
         #Dialog box
+        dialog_rect = pygame.Rect(dialog_x, dialog_y, dialog_w, dialog_h)
+        draw_rounded_rect(screen, dialog_rect, COLOR_INPUT_BG, radius=14)
+        draw_rounded_border(screen, dialog_rect, COLOR_INPUT_BG, width=1,radius=14)
 
-        #Title
+    #Title
+        title = FONT_TITLE.render("Save session", True, COLOR_TEXT)
+        screen.blit(hint, (dialog_x + 30, dialog_y + 66))
 
-        # Input Field
+        # Input field
+        draw_rounded_rect(screen, input_rect, (20, 35, 25, 240), radius=8)
+        draw_rounded_border(screen, input_rect, COLOR_INPUT_ACTV, width=1, radius=8)
+        txt_surf = FONT_MAIN.render(input_text + "|", True, COLOR_TEXT)
+        screen.blit(txt_surf, (input_rect.x + 12, input_rect.y + 11))
 
         #Buttons
+        mx, my = pygame.mouse.get_pos()
+        sv_color = COLOR_BTN_HV if btn_save.collidepoint(mx, my) else COLOR_BTN_BG
+        cn_color = COLOR_BTN_RED_HV if btn_cancel.collidepoint(mx, my) else COLOR_BTN_RED
 
-        #event get key
+        draw_rounded_rect(screen, btn_save,   sv_color, radius=8)
+        draw_rounded_rect(screen, btn_cancel, cn_color, radius=8)
+        draw_rounded_border(screen, btn_save,   COLOR_INPUT_BD, width=1, radius=8)
+        draw_rounded_border(screen, btn_cancel, (150, 60, 60, 180), width=1, radius=8)
+
+        sv_lbl = FONT_MAIN.render("Save", True, COLOR_TEXT)
+        cn_lbl = FONT_MAIN.render("Cancel", True, COLOR_TEXT)
+        screen.blit(sv_lbl, (btn_save.x   + btn_save.w   // 2 - sv_lbl.get_width() // 2, btn_save.y   + 8))
+        screen.blit(cn_lbl, (btn_cancel.x + btn_cancel.w // 2 - cn_lbl.get_width() // 2, btn_cancel.y + 8))
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit(); sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    active = False
+                elif event.key == pygame.K_RETURN:
+                    result_msg = input_text
+                    active = False
+                elif event.key == pygame.K_BACKSPACE:
+                    input_text = input_text[:-1]
+                else:
+                    if len(input_text) < 40:
+                        input_text += event.unicode
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if btn_save.collidepoint(event.pos):
+                    result_msg = input_text
+                    active = False
+                if btn_cancel.collidepoint(event.pos):
+                    active = False
+    return result_msg
+
+def run_load_dialog(surface, screen, clock, bg):
+    saves = db_load_list()
+    active = True
+
+    dialog_w = 600
+    row_h = 52
+    dialog_h = min(60 + len(saves) * row_h + 60, 520)
+    dialog_x = SCREEN_W // 2 - dialog_w // 2
+    dialog_y = SCREEN_H // 2 - dialog_h // 2
+
+    while active:
+        if bg:
+            screen.blit(bg, (0, 0))
+        else:
+            screen.fill((10, 10, 18))
+        overlay = pygame.Surface((SCREEN_W, SCREEN_H), pygame.SRCALPHA)
+        overlay.fill((0, 0, 0, 160))
+        screen.blit(overlay, (0, 0))
+
+        dialog_rect = pygame.Rect(dialog_x, dialog_y, dialog_w, dialog_h)
+        draw_rounded_rect(screen, dialog_rect, COLOR_INPUT_BG, radius=14)
+        draw_rounded_border(screen, dialog_rect, COLOR_INPUT_BD, width=1, radius=14)
+
+        title = FONT_TITLE.render("Load session", True, COLOR_TEXT)
+        screen.blit(title, (dialog_x + 30, dialog_y + 18))
+
+        mx, my = pygame.mouse.get_pos()
+        row_rects = []
+
+        if not saves:
+            msg = FONT_MAIN.render("No saves found.", True, COLOR_TEXT_DIM)
+            screen.blit(msg, (dialog_x + 30, dialog_y + 70))
+        else:
+            for i, (name, scene, saved_at) in enumerate(saves):
+                ry = dialog_y + 58 + i * row_h
+                rrect = pygame.Rect(dialog_x + 20, ry, dialog_w - 40, row_h - 6)
+                color = COLOR_CHOICE_HV if rrect.collidepoint(mx, my) else COLOR_CHOICE_BG
+                draw_rounded_rect(screen, rrect, color, radius=8)
+                draw_rounded_border(screen, rrect, COLOR_CHOICE_BD, width=1, radius=8)
+
+                name_surf  = FONT_MAIN.render(name, True, COLOR_TEXT)
+                scene_surf = FONT_SMALL.render(f"scene: {scene}", True, COLOR_TEXT_DIM)
+                date_str   = saved_at.strftime("%d.%m.%Y %H:%M") if hasattr(saved_at, 'strftime') else str(saved_at)
+                date_surf  = FONT_SMALL.render(date_str, True, COLOR_TEXT_DIM)
+
+                screen.blit(name_surf,  (rrect.x + 14, rrect.y + 6))
+                screen.blit(scene_surf, (rrect.x + 14, rrect.y + 28))
+                screen.blit(date_surf,  (rrect.x + dialog_w - 180, rrect.y + 17))
+                row_rects.append((rrect, name))
+
+        # Cancel button
+        btn_cancel = pygame.Rect(dialog_x + dialog_w - 150, dialog_y + dialog_h - 50, 130, 34)
+        cn_color = COLOR_BTN_RED_HV if btn_cancel.collidepoint(mx, my) else COLOR_BTN_RED
+        draw_rounded_rect(screen, btn_cancel, cn_color, radius=8)
+        draw_rounded_border(screen, btn_cancel, (150, 60, 60, 180), width=1, radius=8)
+        cn_lbl = FONT_MAIN.render("Cancel", True, COLOR_TEXT)
+        screen.blit(cn_lbl, (btn_cancel.x + btn_cancel.w // 2 - cn_lbl.get_width() // 2, btn_cancel.y + 7))
+
+        pygame.display.flip()
+        clock.tick(FPS)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit(); sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    active = False
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if btn_cancel.collidepoint(event.pos):
+                    active = False
+                for rrect, name in row_rects:
+                    if rrect.collidepoint(event.pos):
+                        result = db_load(name)
+                        return result  # (scene, state) or None
+
+    return None
+
+
 
 
 def draw_scene(surface, bg, scene, available, locked, state, hover_idx):
@@ -405,10 +529,16 @@ def main():
 
     load_fonts()
 
+    db_ok = db_init()
+    if not db_ok:
+        print("DB problem")
+
+
     story = load_story(STORY_FILE)
     state = {}
     current_scene = "start"
     image_cache = {}
+    notification = None
 
     def get_bg(scene):
         image_id = scene.get("image")
@@ -421,6 +551,7 @@ def main():
     hover_idx = -1
 
     while True:
+        dt = clock.tick(FPS)
         scene = story[current_scene]
         bg = get_bg(scene)
         choices = scene["choices"]
@@ -441,15 +572,32 @@ def main():
 
         mx, my = pygame.mouse.get_pos()
 
-        # Hover detection
+
+        save_rect_tmp = pygame.Rect(BOX_MARGIN, BOX_MARGIN, 110, 34)
+        load_rect_tmp = pygame.Rect(BOX_MARGIN + 120, BOX_MARGIN, 110, 34)
+        save_hover = save_rect_tmp.collidepoint(mx, my)
+        load_hover = load_rect_tmp.collidepoint(mx, my)
+
         hover_idx = -1
-        choice_rects = draw_scene(screen, bg, scene, available, locked, state, hover_idx)
+        choice_rects, save_rect, load_rect = draw_scene(
+            screen, bg, scene, available, locked, state, hover_idx, save_hover, load_hover
+        )
         for i, rect in enumerate(choice_rects):
             if rect.collidepoint(mx, my):
                 hover_idx = i
                 break
 
-        choice_rects = draw_scene(screen, bg, scene, available, locked, state, hover_idx)
+        choice_rects, save_rect, load_rect = draw_scene(
+            screen, bg, scene, available, locked, state, hover_idx, save_hover, load_hover
+        )
+
+        if notification:
+            notification.update(dt)
+            if notification.active:
+                notification.draw(screen)
+            else:
+                notification = None
+
         pygame.display.flip()
 
         for event in pygame.event.get():
@@ -459,6 +607,20 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
                     pygame.quit(); sys.exit()
+
+                if event.key == pygame.K_s and db_ok:
+                    session_name = run_save_dialog(screen, screen, clock, bg)
+                    if session_name and session_name.strip():
+                        ok = db_save(session_name.strip(), current_scene, state)
+                        notification = Notification(f"Savedd as '{session_name.strip}'" if ok else "Save failed")
+
+                if event.key == pygame.K_l and db_ok:
+                    result = run_load_dialog(screen, screen, clock, bg)
+                    if result:
+                        current_scene, loaded_state = result
+                        state = loaded_state if isinstance(loaded_state, dict) else {}
+                        notification = Notification(f"Loaded '{result}'" if result else "Load failed")
+
                 if pygame.K_1 <= event.key <= pygame.K_9:
                     idx = event.key - pygame.K_1
                     if idx < len(available):
@@ -469,17 +631,31 @@ def main():
                         hover_idx = -1
 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                for i, rect in enumerate(choice_rects):
-                    if rect.collidepoint(event.pos):
-                        choice = available[i]
-                        for k, v in choice.get("effects", {}).items():
-                            state[k] = state.get(k, 0) + v
-                        current_scene = choice["next"]
-                        hover_idx = -1
-                        break
+                if save_rect.collidepoint(event.pos) and db_ok:
+                    session_name = run_save_dialog(screen, screen, clock, bg)
+                    if session_name and session_name.strip():
+                        ok = db_save(session_name.strip(), current_scene, state)
+                        notification = Notification(
+                            f"Savedd as '{session_name.strip}'" if ok else "Save failed"
+                        )
 
-        clock.tick(FPS)
+                # Load button click
+                elif load_rect.collidepoint(event.pos) and db_ok:
+                    result = run_load_dialog(screen, screen, clock, bg)
+                    if result:
+                        current_scene, loaded_state = result
+                        state = loaded_state if isinstance(loaded_state, dict) else {}
+                        notification = Notification(f"Loaded: {current_scene}")
 
+                else:
+                    for i, rect in enumerate(choice_rects):
+                        if rect.collidepoint(event.pos):
+                            choice = available[i]
+                            for k, v in choice.get("effects", {}).items():
+                                state[k] = state.get(k, 0) + v
+                            current_scene = choice["next"]
+                            hover_idx = -1
+                            break
 
 if __name__ == "__main__":
     main()
