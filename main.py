@@ -193,6 +193,12 @@ def check_condition(choice, state):
             return False
     return True
 
+def check_item(choice, inventory):
+    required = choice.get("require_item")
+    if required and required not in inventory:
+        return False
+    return True
+
 
 def draw_stats(surface, state):
     if not state:
@@ -207,6 +213,23 @@ def draw_stats(surface, state):
         draw_rounded_rect(surface, bg_rect, COLOR_STAT_BG, radius=6)
         surface.blit(surf, (x - w + 8, y + 4))
         y += 32
+
+
+def draw_inventory(surface, inventory):
+    if not inventory:
+        return
+    x = BOX_MARGIN
+    y = BOX_MARGIN + 50
+    title = FONT_SMALL.render("ITEMS:", True, COLOR_TEXT_DIM)
+    surface.blit(title, (x, y))
+    y += 22
+    for item in inventory:
+        surf = FONT_SMALL.render(f"+ {item}", True, (120,200,140))
+        w = surf.get_width() + 16
+        bg_rect = pygame.Rect(x, y, w, 24)
+        draw_rounded_rect(surface, bg_rect, COLOR_STAT_BG, radius=6)
+        surface.blit(surf, (x + 8, y + 4))
+        y += 28
 
 
 def draw_save_button(surface, hover=False):
@@ -533,6 +556,7 @@ def main():
     story = load_story(STORY_FILE)
     state = {}
     current_scene = "start"
+    inventory = set()
     image_cache = {}
     notification = None
 

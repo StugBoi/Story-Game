@@ -179,6 +179,13 @@
         "text": "Drop something into the well",
         "next": "well_drop",
         "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Drop the iron key into the well and speak seven names",
+        "next": "ending_all_freed",
+        "require_item": "iron_key",
+        "condition": { "knowledge": 5 },
+        "effects": { "courage": 2 }
       }
     ]
   },
@@ -266,9 +273,10 @@
     "text": "Women's boots, size small. Inside the left one — a folded note. The handwriting is hurried: 'The keeper knows I found the journal. I am hiding it in the room with the broken mirror. Hurry.' No signature.",
     "choices": [
       {
-        "text": "Enter the house and find that room",
+        "text": "Take the note and enter the house",
         "next": "house",
-        "effects": { "knowledge": 2 }
+        "effects": { "knowledge": 2 },
+        "give_item": "marenote"
       }
     ]
   },
@@ -325,9 +333,27 @@
         "effects": { "knowledge": 1 }
       },
       {
+        "text": "Show her the note from the boots",
+        "next": "keeper_note_reaction",
+        "require_item": "marenote",
+        "effects": { "knowledge": 1 }
+      },
+      {
         "text": "Back away slowly",
         "next": "house",
         "effects": { "fear": 1 }
+      }
+    ]
+  },
+
+  "keeper_note_reaction": {
+    "image": "13",
+    "text": "The keeper's eyes fix on the note. Something flickers across her face — not anger. Recognition. 'She was more clever than I gave her credit for,' she says quietly. 'Sit down. I will tell you everything.'",
+    "choices": [
+      {
+        "text": "Sit and listen",
+        "next": "keeper_maren",
+        "effects": { "knowledge": 2 }
       }
     ]
   },
@@ -482,11 +508,13 @@
       {
         "text": "Take the key and use it for Maren",
         "next": "ending_maren_returned",
+        "give_item": "iron_key",
         "effects": { "courage": 1 }
       },
       {
-        "text": "Use it to free all seven",
-        "next": "ending_all_freed",
+        "text": "Take the key and go to the well to free all seven",
+        "next": "well",
+        "give_item": "iron_key",
         "condition": { "knowledge": 5 },
         "effects": { "courage": 2 }
       }
@@ -500,11 +528,13 @@
       {
         "text": "Read it immediately",
         "next": "maren_journal",
+        "give_item": "old_journal",
         "effects": { "knowledge": 3 }
       },
       {
         "text": "Hide it and explore the house first",
         "next": "house",
+        "give_item": "old_journal",
         "effects": { "knowledge": 2 }
       }
     ]
@@ -522,6 +552,7 @@
       {
         "text": "Burn the journal at the altar",
         "next": "altar_burn",
+        "require_item": "old_journal",
         "effects": { "knowledge": 1 }
       }
     ]
@@ -560,6 +591,7 @@
       {
         "text": "Take the journal",
         "next": "maren_journal",
+        "give_item": "old_journal",
         "effects": { "knowledge": 3 }
       },
       {
@@ -594,6 +626,7 @@
       {
         "text": "Take the journal and head to the altar",
         "next": "altar_burn",
+        "require_item": "old_journal",
         "effects": { "knowledge": 1, "courage": 1 }
       },
       {
@@ -616,6 +649,7 @@
       {
         "text": "Burn the journal — free Maren first",
         "next": "altar_burn",
+        "require_item": "old_journal",
         "effects": { "courage": 1 }
       }
     ]
@@ -628,6 +662,7 @@
       {
         "text": "Take the journal and go",
         "next": "maren_journal",
+        "give_item": "old_journal",
         "effects": { "knowledge": 1 }
       },
       {
@@ -642,13 +677,15 @@
     "text": "You pick up the lantern. Its light shifts from yellow to green and back again. The symbols on the walls become visible — not carvings, but stains, as if burned from inside the wood.",
     "choices": [
       {
-        "text": "Study the symbols",
+        "text": "Take the lantern and study the symbols",
         "next": "symbols",
+        "give_item": "lantern",
         "effects": { "knowledge": 1 }
       },
       {
         "text": "Take the lantern upstairs",
         "next": "upstairs",
+        "give_item": "lantern",
         "effects": { "courage": 1 }
       }
     ]
@@ -665,6 +702,24 @@
       },
       {
         "text": "Follow this clue to the deep forest",
+        "next": "deep_forest",
+        "effects": { "knowledge": 1, "curiosity": 1 }
+      },
+      {
+        "text": "Use the lantern to see if there is more hidden text",
+        "next": "symbols_lantern",
+        "require_item": "lantern",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "symbols_lantern": {
+    "image": "3",
+    "text": "The lantern's green light reveals a second layer of text beneath the symbols — coordinates, etched in a different hand. Northeast. Forty steps past the altar stone. The first tree is marked with a cross.",
+    "choices": [
+      {
+        "text": "Head to the deep forest now",
         "next": "deep_forest",
         "effects": { "knowledge": 1, "curiosity": 1 }
       }
@@ -704,6 +759,7 @@
       {
         "text": "Take the carved tree",
         "next": "tree_toy",
+        "give_item": "carved_tree",
         "effects": { "knowledge": 2 }
       },
       {
@@ -725,6 +781,7 @@
       {
         "text": "Take the music box",
         "next": "music_map",
+        "give_item": "music_box",
         "effects": { "knowledge": 2 }
       }
     ]
@@ -798,6 +855,24 @@
         "text": "Ask if he knows Maren",
         "next": "ghost_maren",
         "effects": { "knowledge": 1 }
+      },
+      {
+        "text": "Show him the journal — ask if he recognizes the handwriting",
+        "next": "ghost_journal_reaction",
+        "require_item": "old_journal",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "ghost_journal_reaction": {
+    "image": "5",
+    "text": "Aldric stares at the journal. His flickering slows. 'I know that handwriting,' he says softly. 'She was here. She talked to me. She said she was leaving something behind.' He pauses. 'She also said to trust no one who offers you a deal.'",
+    "choices": [
+      {
+        "text": "Ask what else she said",
+        "next": "ghost_maren_fate",
+        "effects": { "knowledge": 2 }
       }
     ]
   },
@@ -889,6 +964,12 @@
         "text": "Head to the deep forest",
         "next": "deep_forest",
         "effects": { "courage": 1, "knowledge": 1 }
+      },
+      {
+        "text": "Use the music box as a compass",
+        "next": "deep_forest",
+        "require_item": "music_box",
+        "effects": { "courage": 1, "knowledge": 2 }
       }
     ]
   },
@@ -904,9 +985,27 @@
         "effects": { "courage": 1 }
       },
       {
+        "text": "Show him the carved tree — ask if he knows whose it is",
+        "next": "ghost_sela_reveal",
+        "require_item": "carved_tree",
+        "effects": { "knowledge": 2 }
+      },
+      {
         "text": "Find the first tree — end the forest's power",
         "next": "deep_forest",
         "effects": { "curiosity": 1 }
+      }
+    ]
+  },
+
+  "ghost_sela_reveal": {
+    "image": "5",
+    "text": "Aldric stares at the carved tree for a long time. 'Sela made that,' he says. 'She carved it herself. She gave it to her mother before — before the forest took everything.' His voice is barely audible. 'If the keeper sees that, she might remember.'",
+    "choices": [
+      {
+        "text": "Go to the keeper and show her the carved tree",
+        "next": "keeper_reveal",
+        "effects": { "courage": 2, "knowledge": 1 }
       }
     ]
   },
@@ -947,6 +1046,24 @@
         "text": "Whisper Maren's name to the roots",
         "next": "first_tree_maren",
         "effects": { "courage": 1 }
+      },
+      {
+        "text": "Hold up the lantern and look at the roots",
+        "next": "first_tree_lantern",
+        "require_item": "lantern",
+        "effects": { "knowledge": 2 }
+      }
+    ]
+  },
+
+  "first_tree_lantern": {
+    "image": "14",
+    "text": "The lantern's light turns white the moment it touches the bark. The roots are covered in the same symbols as the house walls — but here they form a single word, repeated over and over. The true name. You now know it without being told.",
+    "choices": [
+      {
+        "text": "Whisper the name to the roots",
+        "next": "first_tree_name",
+        "effects": { "courage": 1, "knowledge": 1 }
       }
     ]
   },
@@ -999,6 +1116,7 @@
       {
         "text": "Burn the journal here and speak Maren's name",
         "next": "altar_burn",
+        "require_item": "old_journal",
         "condition": { "knowledge": 2 },
         "effects": { "courage": 1 }
       },
@@ -1010,6 +1128,7 @@
       {
         "text": "Speak the ancient words from the journal",
         "next": "ending_scholar",
+        "require_item": "old_journal",
         "condition": { "knowledge": 5 },
         "effects": { "knowledge": 1 }
       },
