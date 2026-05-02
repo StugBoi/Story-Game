@@ -78,7 +78,7 @@ def db_init():
         return False
 
 
-def db_save(session_name, scene, state):
+def db_save(session_name, scene, state, inventory):
     try:
         conn = db_connect()
         cur = conn.cursor()
@@ -89,7 +89,7 @@ def db_save(session_name, scene, state):
             DO UPDATE SET scene = EXCLUDED.scene,
                           state = EXCLUDED.state,
                           saved_at = NOW()
-        """, (session_name, scene, json.dumps(state)))
+        """, (session_name, scene, json.dumps({"state": state, "inventory": list(inventory)})))
         conn.commit()
         cur.close()
         conn.close()
@@ -169,7 +169,6 @@ def draw_rounded_rect(surface, rect, color, radius=CORNER_R):
 
 def draw_rounded_border(surface, rect, color, width=2, radius=CORNER_R):
     pygame.draw.rect(surface, color, rect, width=width, border_radius=radius)
-
 
 def wrap_text(text, font, max_width):
     words = text.split()
@@ -439,7 +438,7 @@ def run_load_dialog(surface, screen, clock, bg):
 
     return None
 
-def draw_scene(surface, bg, scene, available, locked, state, hover_idx,
+def draw_scene(surface, bg, scene, available, locked, state, inventory, hover_idx,
                save_hover=False, load_hover=False):
     if bg:
         surface.blit(bg, (0, 0))
@@ -454,6 +453,7 @@ def draw_scene(surface, bg, scene, available, locked, state, hover_idx,
     surface.blit(vignette, (0, 0))
 
     draw_stats(surface, state)
+    draw_inventory(surface, inventory)
     save_rect = draw_save_button(surface, hover=save_hover)
     load_rect = draw_load_button(surface, hover=load_hover)
 
@@ -576,8 +576,8 @@ def main():
         bg = get_bg(scene)
         choices = scene["choices"]
 
-        available = [c for c in choices if check_condition(c, state)]
-        locked    = [c for c in choices if not check_condition(c, state)]
+        available = [c for c in choices if check_condition(c, state) and check_item(c, state)]
+        locked    = [c for c in choices if not check_condition(c, state) or not check_item(c, inventory)]
 
         # Ending
         if not choices:
@@ -600,7 +600,7 @@ def main():
 
         hover_idx = -1
         choice_rects, save_rect, load_rect = draw_scene(
-            screen, bg, scene, available, locked, state, hover_idx,
+            screen, bg, scene, available, locked, state, inventory, hover_idx,
             save_hover, load_hover
         )
         for i, rect in enumerate(choice_rects):
@@ -609,7 +609,7 @@ def main():
                 break
 
         choice_rects, save_rect, load_rect = draw_scene(
-            screen, bg, scene, available, locked, state, hover_idx,
+            screen, bg, scene, available, locked, state, inventory, hover_idx,
             save_hover, load_hover
         )
 
@@ -623,6 +623,8 @@ def main():
 
         pygame.display.flip()
 
+        current_scene, load_data = result
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit(); sys.exit()
@@ -635,7 +637,7 @@ def main():
                 if event.key == pygame.K_s and db_ok:
                     session_name = run_save_dialog(screen, screen, clock, bg)
                     if session_name and session_name.strip():
-                        ok = db_save(session_name.strip(), current_scene, state)
+                        ok = db_save(session_name.strip(), current_scene, state, inventory)
                         notification = Notification(
                             f"Saved as '{session_name.strip()}'" if ok else "Save failed."
                         )
@@ -644,8 +646,13 @@ def main():
                 if event.key == pygame.K_l and db_ok:
                     result = run_load_dialog(screen, screen, clock, bg)
                     if result:
-                        current_scene, loaded_state = result
-                        state = loaded_state if isinstance(loaded_state, dict) else {}
+                        current_scene, load_data = result
+                        if isinstance(load_data, dict) and "state" in load_data:
+                            state = load_data.get("state", {})
+                            inventory = set(load_data.get("inventory", []))
+                        else:
+                            state = load_data if isinstance(load_data, dict) else {}
+                            inventory = set()
                         notification = Notification(f"Loaded: {current_scene}")
 
                 # Choice by number
@@ -663,7 +670,7 @@ def main():
                 if save_rect.collidepoint(event.pos) and db_ok:
                     session_name = run_save_dialog(screen, screen, clock, bg)
                     if session_name and session_name.strip():
-                        ok = db_save(session_name.strip(), current_scene, state)
+                        ok = db_save(session_name.strip(), current_scene, state, inventory)
                         notification = Notification(
                             f"Saved as '{session_name.strip()}'" if ok else "Save failed."
                         )
@@ -682,6 +689,11 @@ def main():
                             choice = available[i]
                             for k, v in choice.get("effects", {}).items():
                                 state[k] = state.get(k, 0) + v
+                            if "give_item" in choice:
+                                item = choice["give_item"]
+                                if item not in inventory:
+                                    inventory.add(item)
+                                    notification = Notification(f"Item received:{item}")
                             current_scene = choice["next"]
                             hover_idx = -1
                             break
