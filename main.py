@@ -231,6 +231,18 @@ def draw_inventory(surface, inventory):
         y += 28
 
 
+def apply_load(result):
+    if result is None:
+        return None, None, None
+    scene, data = result
+    if isinstance(data, dict) and "state" in data:
+        state     = data.get("state", {})
+        inventory = set(data.get("inventory", []))
+    else:
+        state     = data if isinstance(data, dict) else {}
+        inventory = set()
+    return scene, state, inventory
+
 def draw_save_button(surface, hover=False):
     color = COLOR_BTN_HV if hover else COLOR_BTN_BG
     rect = pygame.Rect(BOX_MARGIN, BOX_MARGIN, 110, 34)
@@ -501,7 +513,13 @@ def draw_scene(surface, bg, scene, available, locked, state, inventory, hover_id
     for choice in locked:
         crect = pygame.Rect(box_x + BOX_PADDING, cy, choice_w, CHOICE_H)
         draw_rounded_rect(surface, crect, COLOR_LOCKED, radius=8)
-        req_str = ", ".join(f"{k}>={v}" for k, v in choice["condition"].items())
+        reasons = []
+        for k, v in choice.get("condition", {}).items():
+            reasons.append(f"{k}>={v}")
+        if choice.get("require_item"):
+            reasons.append(f"item: {choice['require_item']}")
+        req_str = ", ".join(reasons)
+
         label = FONT_SMALL.render(f"[locked: {req_str}]  {choice['text']}", True, COLOR_LOCKED_TEXT)
         surface.blit(label, (crect.x + 14, crect.y + CHOICE_H//2 - label.get_height()//2))
         cy += CHOICE_H + CHOICE_PAD
@@ -622,8 +640,6 @@ def main():
                 notification = None
 
         pygame.display.flip()
-
-        current_scene, load_data = result
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
