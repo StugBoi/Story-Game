@@ -695,9 +695,12 @@ def main():
                 elif load_rect.collidepoint(event.pos) and db_ok:
                     result = run_load_dialog(screen, screen, clock, bg)
                     if result:
-                        current_scene, loaded_state = result
-                        state = loaded_state if isinstance(loaded_state, dict) else {}
-                        notification = Notification(f"Loaded: {current_scene}")
+                        loaded_scene, loaded_state, loaded_inv = apply_load(result)
+                        if loaded_scene:
+                            current_scene, loaded_state = result
+                            state = loaded_state if isinstance(loaded_state, dict) else {}
+                            inventory = loaded_inv
+                            notification = Notification(f"Loaded: {current_scene}")
 
                 else:
                     for i, rect in enumerate(choice_rects):
