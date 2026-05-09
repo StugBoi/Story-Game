@@ -594,7 +594,7 @@ def main():
         bg = get_bg(scene)
         choices = scene["choices"]
 
-        available = [c for c in choices if check_condition(c, state) and check_item(c, state)]
+        available = [c for c in choices if check_condition(c, state) and check_item(c, inventory)]
         locked    = [c for c in choices if not check_condition(c, state) or not check_item(c, inventory)]
 
         # Ending
@@ -662,14 +662,12 @@ def main():
                 if event.key == pygame.K_l and db_ok:
                     result = run_load_dialog(screen, screen, clock, bg)
                     if result:
-                        current_scene, load_data = result
-                        if isinstance(load_data, dict) and "state" in load_data:
-                            state = load_data.get("state", {})
-                            inventory = set(load_data.get("inventory", []))
-                        else:
-                            state = load_data if isinstance(load_data, dict) else {}
-                            inventory = set()
-                        notification = Notification(f"Loaded: {current_scene}")
+                        loaded_scene, loaded_state, loaded_inv = apply_load(result)
+                        if loaded_scene:
+                            current_scene = loaded_scene
+                            state = loaded_state
+                            inventory = loaded_inv
+                            notification = Notification(f"Loaded: {current_scene}")
 
                 # Choice by number
                 if pygame.K_1 <= event.key <= pygame.K_9:
@@ -697,8 +695,8 @@ def main():
                     if result:
                         loaded_scene, loaded_state, loaded_inv = apply_load(result)
                         if loaded_scene:
-                            current_scene, loaded_state = result
-                            state = loaded_state if isinstance(loaded_state, dict) else {}
+                            current_scene = loaded_scene
+                            state = loaded_state
                             inventory = loaded_inv
                             notification = Notification(f"Loaded: {current_scene}")
 
