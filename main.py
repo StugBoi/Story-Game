@@ -39,6 +39,10 @@ COLOR_BTN_RED     = (60, 20, 20, 220)
 COLOR_BTN_RED_HV  = (110, 30, 30, 255)
 COLOR_NOTIFY_BG   = (10, 40, 20, 230)
 COLOR_NOTIFY_BD   = (60, 200, 100, 180)
+COLOR_ITEM_BG   = (20, 30, 45, 190)
+COLOR_ITEM_HV   = (30, 60, 90, 230)
+COLOR_ITEM_BD   = (60, 120, 180, 160)
+COLOR_ITEM_TEXT = (140, 190, 230)
 
 FONT_MAIN  = None
 FONT_SMALL = None
@@ -47,6 +51,7 @@ FONT_TITLE = None
 TEXT_BOX_H  = 220
 CHOICE_H    = 46
 CHOICE_PAD  = 10
+ITEM_H      = 40
 BOX_MARGIN  = 40
 BOX_PADDING = 28
 CORNER_R    = 14
@@ -197,6 +202,10 @@ def check_item(choice, inventory):
     if required and required not in inventory:
         return False
     return True
+
+def get_item_actions(scene, inventory):
+    actions = scene.get("items_actions", [])
+    return [a for a in actions if a["item"] in inventory]
 
 
 def draw_stats(surface, state):
@@ -450,8 +459,9 @@ def run_load_dialog(surface, screen, clock, bg):
 
     return None
 
-def draw_scene(surface, bg, scene, available, locked, state, inventory, hover_idx,
+def draw_scene(surface, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx= -1,
                save_hover=False, load_hover=False):
+
     if bg:
         surface.blit(bg, (0, 0))
     else:
@@ -523,6 +533,34 @@ def draw_scene(surface, bg, scene, available, locked, state, inventory, hover_id
         label = FONT_SMALL.render(f"[locked: {req_str}]  {choice['text']}", True, COLOR_LOCKED_TEXT)
         surface.blit(label, (crect.x + 14, crect.y + CHOICE_H//2 - label.get_height()//2))
         cy += CHOICE_H + CHOICE_PAD
+
+    item_rects = []
+    if item_actions:
+        div2_y = cy + 6
+        pygame.draw.line(surface,
+                         (*COLOR_ITEM_BD[:3], 60),
+                         (box_x + BOX_PADDING, div2_y),
+                         (box_x + box_w - BOX_PADDING, div2_y), 1)
+        cy += 18
+
+        use_label = FONT_SMALL.render("USE ITEM", True, COLOR_ITEM_TEXT)
+        surface.blit(use_label, (box_x + BOX_PADDING, cy))
+        cy += 22
+
+        for j, action in enumerate(item_actions):
+            arect = pygame.Rect(box_x + BOX_PADDING, cy, choice_w, ITEM_H)
+            acolor = COLOR_ITEM_HV if j == item_hover_idx else COLOR_ITEM_BG
+            draw_rounded_rect(surface, arect, acolor, radius=8)
+            draw_rounded_border(surface, arect, COLOR_ITEM_BD, width=1, radius=8)
+
+            item_badge = FONT_SMALL.render(f"[{action['item']}]", True, COLOR_ITEM_TEXT)
+            surface.blit(item_badge, (arect.x + 10, arect.y + ITEM_H//2 - item_badge.get_height()//2))
+
+            alabel = FONT_MAIN.render(action["text"], True, COLOR_TEXT)
+            surface.blit(alabel, (arect.x + item_badge.get_width() + 18,
+                            arect.y + ITEM_H//2 - alabel.get_height()//2))
+            item_rects.append(arect)
+            cy += ITEM_H + CHOICE_PAD
 
     return choice_rects, save_rect, load_rect
 
@@ -596,6 +634,7 @@ def main():
 
         available = [c for c in choices if check_condition(c, state) and check_item(c, inventory)]
         locked    = [c for c in choices if not check_condition(c, state) or not check_item(c, inventory)]
+        item_actions = get_item_actions((scene, inventory))
 
         # Ending
         if not choices:
@@ -618,7 +657,7 @@ def main():
 
         hover_idx = -1
         choice_rects, save_rect, load_rect = draw_scene(
-            screen, bg, scene, available, locked, state, inventory, hover_idx,
+            screen, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx,
             save_hover, load_hover
         )
         for i, rect in enumerate(choice_rects):
@@ -626,8 +665,14 @@ def main():
                 hover_idx = i
                 break
 
+        item_hover_idx = -1
+        for j, rect in enumerate(item_rects):
+            if rect.collidepoint(mx, my):
+                item_hover_idx = j
+                break
+
         choice_rects, save_rect, load_rect = draw_scene(
-            screen, bg, scene, available, locked, state, inventory, hover_idx,
+            screen, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx,
             save_hover, load_hover
         )
 
@@ -676,6 +721,11 @@ def main():
                         choice = available[idx]
                         for k, v in choice.get("effects", {}).items():
                             state[k] = state.get(k, 0) + v
+                        if "give_item" in choice:
+                            item = choice["give_item"]
+                            if item not in inventory:
+                                inventory.add(item)
+                                notification = Notification(f"Item received:{item}")
                         current_scene = choice["next"]
                         hover_idx = -1
 
@@ -714,6 +764,22 @@ def main():
                             current_scene = choice["next"]
                             hover_idx = -1
                             break
+
+                for j, rect in enumerate(item_rects):
+                    if rect.collidepoint(event.pos):
+                        action = item_actions[j]
+                        for k, v in choice.get("effects", {}).items():
+                            state[k] = state.get(k, 0) + v
+                        if "give_item" in action:
+                            item = action["give_item"]
+                            if item not in inventory:
+                                inventory.add(item)
+                                notification = Notification(f"Item received:{item}")
+                        current_scene = choice["next"]
+                        hover_idx = -1
+                        item_hover_idx = -1
+                        break
+
 
 
 if __name__ == "__main__":
