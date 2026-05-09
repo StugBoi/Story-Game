@@ -738,6 +738,7 @@ def main():
                         notification = Notification(
                             f"Saved as '{session_name.strip()}'" if ok else "Save failed."
                         )
+                        #aaaa
 
                 # Load button click
                 elif load_rect.collidepoint(event.pos) and db_ok:
