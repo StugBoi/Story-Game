@@ -48,7 +48,7 @@ FONT_MAIN  = None
 FONT_SMALL = None
 FONT_TITLE = None
 
-TEXT_BOX_H  = 220
+TEXT_BOX_H  = 160
 CHOICE_H    = 46
 CHOICE_PAD  = 10
 ITEM_H      = 40
@@ -204,7 +204,7 @@ def check_item(choice, inventory):
     return True
 
 def get_item_actions(scene, inventory):
-    actions = scene.get("items_actions", [])
+    actions = scene.get("item_actions", [])
     return [a for a in actions if a["item"] in inventory]
 
 
@@ -562,7 +562,7 @@ def draw_scene(surface, bg, scene, available, locked, state, inventory, item_act
             item_rects.append(arect)
             cy += ITEM_H + CHOICE_PAD
 
-    return choice_rects, save_rect, load_rect
+    return choice_rects, item_rects, save_rect, load_rect
 
 
 def ending_screen(surface, scene, bg):
@@ -625,6 +625,7 @@ def main():
         return image_cache[image_id]
 
     hover_idx = -1
+    item_hover_idx = -1
 
     while True:
         dt = clock.tick(FPS)
@@ -634,7 +635,7 @@ def main():
 
         available = [c for c in choices if check_condition(c, state) and check_item(c, inventory)]
         locked    = [c for c in choices if not check_condition(c, state) or not check_item(c, inventory)]
-        item_actions = get_item_actions((scene, inventory))
+        item_actions = get_item_actions(scene, inventory)
 
         # Ending
         if not choices:
@@ -656,7 +657,7 @@ def main():
         load_hover = load_rect_tmp.collidepoint(mx, my)
 
         hover_idx = -1
-        choice_rects, save_rect, load_rect = draw_scene(
+        choice_rects, item_rects, save_rect, load_rect = draw_scene(
             screen, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx,
             save_hover, load_hover
         )
@@ -671,7 +672,7 @@ def main():
                 item_hover_idx = j
                 break
 
-        choice_rects, save_rect, load_rect = draw_scene(
+        choice_rects, item_rects, save_rect, load_rect = draw_scene(
             screen, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx,
             save_hover, load_hover
         )
@@ -738,7 +739,7 @@ def main():
                         notification = Notification(
                             f"Saved as '{session_name.strip()}'" if ok else "Save failed."
                         )
-                        #aaaa
+
 
                 # Load button click
                 elif load_rect.collidepoint(event.pos) and db_ok:
@@ -769,14 +770,14 @@ def main():
                 for j, rect in enumerate(item_rects):
                     if rect.collidepoint(event.pos):
                         action = item_actions[j]
-                        for k, v in choice.get("effects", {}).items():
+                        for k, v in action.get("effects", {}).items():
                             state[k] = state.get(k, 0) + v
                         if "give_item" in action:
                             item = action["give_item"]
                             if item not in inventory:
                                 inventory.add(item)
                                 notification = Notification(f"Item received:{item}")
-                        current_scene = choice["next"]
+                        current_scene = action["next"]
                         hover_idx = -1
                         item_hover_idx = -1
                         break
