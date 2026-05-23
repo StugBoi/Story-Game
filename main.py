@@ -49,9 +49,9 @@ FONT_SMALL = None
 FONT_TITLE = None
 
 TEXT_BOX_H  = 160
-CHOICE_H    = 46
+CHOICE_H    = 40
 CHOICE_PAD  = 10
-ITEM_H      = 40
+ITEM_H      = 36
 BOX_MARGIN  = 40
 BOX_PADDING = 28
 CORNER_R    = 14
@@ -223,7 +223,7 @@ def draw_stats(surface, state):
         y += 32
 
 
-def draw_inventory(surface, inventory):
+def draw_inventory(surface, inventory, icons={}):
     if not inventory:
         return
     x = BOX_MARGIN
@@ -232,11 +232,18 @@ def draw_inventory(surface, inventory):
     surface.blit(title, (x, y))
     y += 22
     for item in inventory:
-        surf = FONT_SMALL.render(f"+ {item}", True, (120,200,140))
-        w = surf.get_width() + 16
-        bg_rect = pygame.Rect(x, y, w, 24)
-        draw_rounded_rect(surface, bg_rect, COLOR_STAT_BG, radius=6)
-        surface.blit(surf, (x + 8, y + 4))
+        icon = icons.get(item)
+        if icon:
+            surface.blit(icon, (x, y))
+            surf = FONT_SMALL.render(item, True, (120,200,140))
+            surface.blit(surf, (x + 28, y + 4))
+        else:
+
+            surf = FONT_SMALL.render(f"+ {item}", True, (120,200,140))
+            w = surf.get_width() + 16
+            bg_rect = pygame.Rect(x, y, w, 24)
+            draw_rounded_rect(surface, bg_rect, COLOR_STAT_BG, radius=6)
+            surface.blit(surf, (x + 8, y + 4))
         y += 28
 
 
@@ -459,7 +466,7 @@ def run_load_dialog(surface, screen, clock, bg):
 
     return None
 
-def draw_scene(surface, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx= -1,
+def draw_scene(surface, bg, scene, available, locked, state, inventory, item_actions, item_icons, hover_idx, item_hover_idx= -1,
                save_hover=False, load_hover=False):
 
     if bg:
@@ -475,7 +482,7 @@ def draw_scene(surface, bg, scene, available, locked, state, inventory, item_act
     surface.blit(vignette, (0, 0))
 
     draw_stats(surface, state)
-    draw_inventory(surface, inventory)
+    draw_inventory(surface, inventory, item_icons)
     save_rect = draw_save_button(surface, hover=save_hover)
     load_rect = draw_load_button(surface, hover=load_hover)
 
@@ -483,7 +490,8 @@ def draw_scene(surface, bg, scene, available, locked, state, inventory, item_act
     box_w = SCREEN_W - BOX_MARGIN * 2
     total_choices = len(available) + len(locked)
     choices_h = total_choices * (CHOICE_H + CHOICE_PAD) + CHOICE_PAD
-    box_h = TEXT_BOX_H + choices_h
+    items_h = (len(item_actions) *(ITEM_H + CHOICE_PAD) + 46) if item_actions else 0
+    box_h = TEXT_BOX_H + choices_h + items_h
     box_y = SCREEN_H - box_h - BOX_MARGIN
 
     text_rect = pygame.Rect(box_x, box_y, box_w, box_h)
@@ -553,12 +561,18 @@ def draw_scene(surface, bg, scene, available, locked, state, inventory, item_act
             draw_rounded_rect(surface, arect, acolor, radius=8)
             draw_rounded_border(surface, arect, COLOR_ITEM_BD, width=1, radius=8)
 
-            item_badge = FONT_SMALL.render(f"[{action['item']}]", True, COLOR_ITEM_TEXT)
-            surface.blit(item_badge, (arect.x + 10, arect.y + ITEM_H//2 - item_badge.get_height()//2))
+
+            icon = item_icons.get(action["item"])
+            if icon:
+                surface.blit(icon, (arect.x + 10, arect.y + ITEM_H//2 - 12))
+                text_x = arect.x + 42
+            else:
+                item_badge = FONT_SMALL.render(f"[{action['item']}]", True, COLOR_ITEM_TEXT)
+                surface.blit(item_badge, (arect.x + 10, arect.y + ITEM_H//2 - item_badge.get_height()//2))
+                text_x = arect.x + item_badge.get_width() + 18
 
             alabel = FONT_MAIN.render(action["text"], True, COLOR_TEXT)
-            surface.blit(alabel, (arect.x + item_badge.get_width() + 18,
-                            arect.y + ITEM_H//2 - alabel.get_height()//2))
+            surface.blit(alabel, (text_x, arect.y + ITEM_H//2 - alabel.get_height()//2))
             item_rects.append(arect)
             cy += ITEM_H + CHOICE_PAD
 
@@ -614,6 +628,16 @@ def main():
     current_scene = "start"
     inventory = set()
     image_cache = {}
+    item_icons = {}
+    for fname in os.listdir("img"):
+        name = os.path.splitext(fname)[0]
+        if name.endswith(".png"):
+            name = os.path.splitext(name)[0]
+        try:
+            img = pygame.image.load(os.path.join("img", fname)).convert_alpha()
+            item_icons[name] = pygame.transform.scale(img, (24,24))
+        except Exception:
+            pass
     notification = None
 
     def get_bg(scene):
@@ -658,7 +682,7 @@ def main():
 
         hover_idx = -1
         choice_rects, item_rects, save_rect, load_rect = draw_scene(
-            screen, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx,
+            screen, bg, scene, available, locked, state, inventory, item_actions, item_icons, hover_idx, item_hover_idx,
             save_hover, load_hover
         )
         for i, rect in enumerate(choice_rects):
@@ -673,7 +697,7 @@ def main():
                 break
 
         choice_rects, item_rects, save_rect, load_rect = draw_scene(
-            screen, bg, scene, available, locked, state, inventory, item_actions, hover_idx, item_hover_idx,
+            screen, bg, scene, available, locked, state, inventory, item_actions, item_icons, hover_idx, item_hover_idx,
             save_hover, load_hover
         )
 
@@ -753,6 +777,7 @@ def main():
                             notification = Notification(f"Loaded: {current_scene}")
 
                 else:
+                    clicked = False
                     for i, rect in enumerate(choice_rects):
                         if rect.collidepoint(event.pos):
                             choice = available[i]
@@ -765,22 +790,23 @@ def main():
                                     notification = Notification(f"Item received:{item}")
                             current_scene = choice["next"]
                             hover_idx = -1
+                            clicked = True
                             break
-
-                for j, rect in enumerate(item_rects):
-                    if rect.collidepoint(event.pos):
-                        action = item_actions[j]
-                        for k, v in action.get("effects", {}).items():
-                            state[k] = state.get(k, 0) + v
-                        if "give_item" in action:
-                            item = action["give_item"]
-                            if item not in inventory:
-                                inventory.add(item)
-                                notification = Notification(f"Item received:{item}")
-                        current_scene = action["next"]
-                        hover_idx = -1
-                        item_hover_idx = -1
-                        break
+                    if not clicked:
+                        for j, rect in enumerate(item_rects):
+                            if rect.collidepoint(event.pos):
+                                action = item_actions[j]
+                                for k, v in action.get("effects", {}).items():
+                                    state[k] = state.get(k, 0) + v
+                                if "give_item" in action:
+                                    item = action["give_item"]
+                                    if item not in inventory:
+                                        inventory.add(item)
+                                        notification = Notification(f"Item received:{item}")
+                                current_scene = action["next"]
+                                hover_idx = -1
+                                item_hover_idx = -1
+                                break
 
 
 
